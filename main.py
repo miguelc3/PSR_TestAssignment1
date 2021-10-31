@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # Import packages
-from colorama import Fore, Style, Back
+from colorama import Fore, Style
 import argparse
 import random
 import string
@@ -16,7 +16,6 @@ parser.add_argument('-utm', '--use_time_mode', action='store_true', help='')
 parser.add_argument('-mv', '--max_value', type=int, required=False, help=' Max number of secs for time mode or maximum number of inputs for number of inputs mode.')
 args = vars(parser.parse_args())
 
-#print('Welcome to our typing test!\nPress any key to start the test.')
 
 random_letters = []
 pressed_keys = []
@@ -25,6 +24,7 @@ duration_types = []
 
 
 def time_mode():
+
     initial_time = time.time()
     total_hits = 0
     total_types = 0
@@ -81,9 +81,9 @@ def time_mode():
     accuracy = total_hits/len(pressed_keys)*100
     dict_results = {'Accuracy': str(accuracy) + '%',
                     'Inputs': types,
-                    'Number of hints': total_hits,
+                    'Number of hits': total_hits,
                     'Number of types': total_types,
-                    'Test duration': str(args['max_value']) + 's',
+                    'Test duration': str(total_duration) + 's',
                     'Test end': time.ctime(final_time),
                     'Test start': time.ctime(initial_time),
                     'Type average duration': type_average_duration,
@@ -94,23 +94,76 @@ def time_mode():
     pprint(dict_results)
 
 def max_inputs():
+
+    global final_time, total_duration
+    initial_time = time.time()
+    print('Test running up to ' + str(args['max_value']) + ' inputs.')
+    print('Press any key yo start')
+    total_hits = 0
+    total_types = 0
     max_nletters = args['max_value']
     start_key = readchar.readkey()
     if start_key:
         counter = 0
         while True:
+            start_time = time.time()
             random_letter = random.choice(string.ascii_lowercase)
             random_letters.append(random_letter)
-            print('Type ' + Back.LIGHTRED_EX + str(random_letter) + Style.RESET_ALL)
+
+            print('Please type ' + Fore.BLUE + random_letter + Style.RESET_ALL)
+
             pressed_key = readchar.readkey()
+            pressed_keys.append(pressed_key)
+            final_time = time.time()
+
             if pressed_key == random_letter:
                 counter += 1
-                print('You typed ' + pressed_key + Fore.LIGHTGREEN_EX + ' -->RIGHT' + Style.RESET_ALL)
+                total_hits += 1
+                print('You typed ' + Fore.GREEN + pressed_key + Style.RESET_ALL)
             else:
                 counter += 1
-                print('You typed ' + pressed_key + Fore.RED + ' -->WRONG' + Style.RESET_ALL)
+                print('You typed ' + Fore.RED + pressed_key + Style.RESET_ALL)
             if counter==max_nletters:
                 break
+            total_types += 1
+
+            duration_type = final_time - start_time
+            duration_types.append(duration_type)
+            total_duration = final_time - initial_time
+
+            result = 'Input( requested=' + random_letter + ', received=' + pressed_key + \
+            ', duration= ' + str(duration_type) + ')'
+            types.append(result)
+        print('Maximum number of inputs reached.')
+
+    type_average_duration = (args['max_value'])/total_types
+    total_hits_time = 0
+    total_miss_time = 0
+
+    for i in range(0, len(pressed_keys)-1):
+        if pressed_keys[i] == random_letters[i]:
+            total_hits_time += duration_types[i]
+        else:
+            total_miss_time += duration_types[i]
+
+    total_miss = total_types-total_hits
+    type_hit_average_duration = total_hits_time/total_hits
+    type_miss_average_duration = total_miss_time/total_miss
+
+    accuracy = total_hits/len(pressed_keys)*100
+    dict_results = {'Accuracy': str(accuracy) + '%',
+                    'Inputs': types,
+                    'Number of hits': total_hits,
+                    'Number of types': total_types,
+                    'Test duration': str(total_duration) + 's',
+                    'Test end': time.ctime(final_time),
+                    'Test start': time.ctime(initial_time),
+                    'Type average duration': type_average_duration,
+                    'Type hit average duration': type_hit_average_duration,
+                    'Type miss average duration': type_miss_average_duration
+                    }
+
+    pprint(dict_results)
 
 def main():
 
