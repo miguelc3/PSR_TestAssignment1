@@ -75,8 +75,8 @@ def time_mode():
             total_miss_time += duration_types[i]
 
     total_miss = total_types-total_hits
-    type_hit_average_duration = total_hits_time/total_hits
-    type_miss_average_duration = total_miss_time/total_miss
+    type_hit_average_duration = total_hits_time/(total_hits or not total_hits)
+    type_miss_average_duration = total_miss_time/(total_miss or not total_miss)
 
     accuracy = total_hits/len(pressed_keys)*100
     dict_results = {'Accuracy': str(accuracy) + '%',
@@ -147,8 +147,8 @@ def max_inputs():
             total_miss_time += duration_types[i]
 
     total_miss = total_types-total_hits
-    type_hit_average_duration = total_hits_time/total_hits
-    type_miss_average_duration = total_miss_time/total_miss
+    type_hit_average_duration = total_hits_time/(total_hits or not total_hits)
+    type_miss_average_duration = total_miss_time/(total_miss or not total_miss)
 
     accuracy = total_hits/len(pressed_keys)*100
     dict_results = {'Accuracy': str(accuracy) + '%',
