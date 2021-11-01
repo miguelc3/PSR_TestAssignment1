@@ -25,6 +25,7 @@ duration_types = []
 
 def time_mode():
     # This is the time mode
+
     initial_time = time.time()  # Used to save test start time
     # Variables to count the number of types and hits
     total_hits = 0
@@ -113,47 +114,43 @@ def time_mode():
 def max_inputs():
     # This is tha maximum nunber of inputs mode
 
-    initial_time = time.time()
+    initial_time = time.time()  # Used to save test start time
     print('Test running up to ' + str(args['max_value']) + ' inputs.')
-    print('Press any key yo start')
+    print('Press any key to start')
     total_hits = 0
     total_types = 0
     max_nletters = args['max_value']
 
-    start_key = readchar.readkey()
-    if start_key:
-        counter = 0
-        while True:
-            start_time = time.time()
-            random_letter = random.choice(string.ascii_lowercase)
-            random_letters.append(random_letter)
+    readchar.readkey()
 
-            print('Please type ' + Fore.BLUE + random_letter + Style.RESET_ALL)
+    while True:
+        start_time = time.time()
+        random_letter = random.choice(string.ascii_lowercase)
+        random_letters.append(random_letter)
 
-            pressed_key = readchar.readkey()
-            pressed_keys.append(pressed_key)
-            final_time = time.time()
+        print('Please type ' + Fore.BLUE + random_letter + Style.RESET_ALL)
 
-            if pressed_key == random_letter:
-                counter += 1
-                total_hits += 1
-                print('You typed ' + Fore.GREEN + pressed_key + Style.RESET_ALL)
-            else:
-                counter += 1
-                print('You typed ' + Fore.RED + pressed_key + Style.RESET_ALL)
-            if counter == max_nletters:
-                break
+        pressed_key = readchar.readkey()
+        pressed_keys.append(pressed_key)
+        final_time = time.time()
+        total_types += 1
 
-            total_types += 1
+        if pressed_key == random_letter:
+            total_hits += 1
+            print('You typed ' + Fore.GREEN + pressed_key + Style.RESET_ALL)
+        else:
+            print('You typed ' + Fore.RED + pressed_key + Style.RESET_ALL)
+        if total_types == max_nletters:
+            break
 
-            duration_type = final_time - start_time
-            duration_types.append(duration_type)
-            total_duration = final_time - initial_time
+        duration_type = final_time - start_time
+        duration_types.append(duration_type)
+        total_duration = final_time - initial_time
 
-            result = 'Input( requested=' + random_letter + ', received=' + pressed_key + \
+        result = 'Input( requested=' + random_letter + ', received=' + pressed_key + \
             ', duration= ' + str(duration_type) + ')'
-            types.append(result)
-        print('Maximum number of inputs reached.' + Fore.BLUE + 'Test finished!' + Style.RESET_ALL)
+        types.append(result)
+    print('Maximum number of inputs reached.' + Fore.BLUE + 'Test finished!' + Style.RESET_ALL)
 
     type_average_duration = (args['max_value'])/total_types
 
@@ -166,8 +163,8 @@ def max_inputs():
             total_miss_time += duration_types[i]
 
     total_miss = total_types-total_hits
-    type_hit_average_duration = total_hits_time/(total_hits or not total_hits)
-    type_miss_average_duration = total_miss_time/(total_miss or not total_miss)
+    type_hit_average_duration = total_hits_time/total_hits
+    type_miss_average_duration = total_miss_time/total_miss
 
     accuracy = total_hits/len(pressed_keys)*100
     dict_results = {'Accuracy': str(accuracy) + '%',
