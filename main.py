@@ -84,8 +84,16 @@ def time_mode(t):
 
     # Clculate average miss and hit duration -> time lost on hits/number of hits (the same for miss)
     total_miss = total_types - total_hits
-    type_hit_average_duration = total_hits_time/total_hits
-    type_miss_average_duration = total_miss_time/total_miss
+    if total_hits == 0:
+        type_hit_average_duration = 'None'
+    else:
+        type_hit_average_duration = total_hits_time / total_hits
+
+
+    if total_miss == 0:
+        type_miss_average_duration = 'None'
+    else:
+        type_miss_average_duration = total_miss_time/total_miss
 
     # Percentage of accuracy
     accuracy = total_hits/len(pressed_keys)*100
@@ -177,8 +185,15 @@ def max_inputs(n):
 
     # Calculate average miss and hit duration -> time lost on hits/number of hits (the same for miss)
     total_miss = n - total_hits
-    type_hit_average_duration = total_hits_time/total_hits
-    type_miss_average_duration = total_miss_time/total_miss
+    if total_hits == 0:
+        type_hit_average_duration = 'None'
+    else:
+        type_hit_average_duration = total_hits_time / total_hits
+
+    if total_miss == 0:
+        type_miss_average_duration = 'None'
+    else:
+        type_miss_average_duration = total_miss_time / total_miss
 
     # Percentage of accuracy
     accuracy = total_hits/len(pressed_keys)*100
@@ -208,6 +223,10 @@ def main():
     parser.add_argument('-mv', '--max_value', type=int, required=False,
                         help='Max number of secs for time mode or maximum number of inputs for number of inputs mode.')
     args = vars(parser.parse_args())
+
+    if args['max_value'] == None:
+        print(Fore.RED + 'Impossible to start. You need to introduce a maximum value.' + Style.RESET_ALL)
+        exit(0)
 
     # Redirect the code to the right function
     if args['use_time_mode'] is True:
