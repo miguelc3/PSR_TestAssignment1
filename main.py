@@ -203,7 +203,8 @@ def main():
     # Creat a agrparse and add arguments for time mode and max value mode
     parser = argparse.ArgumentParser(description='Definition of ' + Fore.LIGHTBLUE_EX + 'test '
                                                  + Style.RESET_ALL + 'mode')
-    parser.add_argument('-utm', '--use_time_mode', action='store_true', help='')
+    parser.add_argument('-utm', '--use_time_mode', action='store_true', help='Max number of secs for time mode '
+                        'or maximum number of inputs for number of inputs mode.')
     parser.add_argument('-mv', '--max_value', type=int, required=False,
                         help='Max number of secs for time mode or maximum number of inputs for number of inputs mode.')
     args = vars(parser.parse_args())
