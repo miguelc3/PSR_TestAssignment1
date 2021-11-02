@@ -71,7 +71,7 @@ def time_mode(t):
         pass
 
     # Calculate the average type duration, with the test time (t) and the number of types
-    type_average_duration = t/total_types
+    type_average_duration = t / total_types
 
     # For cycle to sum the total time on hit and miss types
     total_hits_time = 0
