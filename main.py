@@ -10,7 +10,7 @@ import readchar
 from pprint import pprint
 from collections import namedtuple
 
-# Named tuple to use for save all the inputs
+# Named tuple to use for saving all the inputs
 inputs = namedtuple('inputs', ['requested', 'received', 'duration'])
 
 random_letters = []
@@ -38,7 +38,7 @@ def time_mode(t):
         random_letter = random.choice(string.ascii_lowercase)
         random_letters.append(random_letter)
         print('Please type ' + Fore.BLUE + random_letter + Style.RESET_ALL)
-        # save the time so that, later, its possible to calculate how long it took to press the key
+        # save the time so that, later, it is possible to calculate how long it took to press the key
         start_time = time.time()
 
         # Read the typed key and save it in the respective list
@@ -57,7 +57,7 @@ def time_mode(t):
             print("Current test duration (" + str(round(total_duration, 3)) + ') exceeds maximum of ' + str(t))
             break
 
-        # Exit if the user press space
+        # Exit if the user presses space
         if pressed_key == ' ':
             print(Fore.RED + 'You pressed space to exit!' + Style.RESET_ALL)
             exit(0)
@@ -71,10 +71,10 @@ def time_mode(t):
             # Miss
             print('You typed ' + Fore.RED + pressed_key + Style.RESET_ALL)
 
-        # Update thw total number of types
+        # Update the total number of types
         total_types += 1
 
-        # Save the result and append it ro the list 'Types'
+        # Save the result and append it to the list 'Types'
         result = inputs(requested=random_letter, received=pressed_key, duration=round(duration_type, 3))
         types.append(result)
 
@@ -95,12 +95,12 @@ def time_mode(t):
     # Calculate average miss and hit duration -> time lost on hits/number of hits (the same for miss)
     total_miss = total_types - total_hits
     if total_hits == 0:
-        type_hit_average_duration = 'None'
+        type_hit_average_duration = 0
     else:
         type_hit_average_duration = total_hits_time / total_hits
 
     if total_miss == 0:
-        type_miss_average_duration = 'None'
+        type_miss_average_duration = 0
     else:
         type_miss_average_duration = total_miss_time/total_miss
 
@@ -123,7 +123,7 @@ def time_mode(t):
 
 
 def max_inputs(n):
-    # This is tha maximum number of inputs mode
+    # This is the maximum number of inputs mode
 
     print('Test running up to ' + str(n) + ' inputs.')
 
@@ -152,7 +152,7 @@ def max_inputs(n):
         pressed_key = readchar.readkey()
         pressed_keys.append(pressed_key)
 
-        # Exit if the user press space
+        # Exit if the user presses space
         if pressed_key == ' ':
             print(Fore.RED + 'You pressed space to exit!' + Style.RESET_ALL)
             exit(0)
@@ -199,12 +199,12 @@ def max_inputs(n):
     # Calculate average miss and hit duration -> time lost on hits/number of hits (the same for miss)
     total_miss = n - total_hits
     if total_hits == 0:
-        type_hit_average_duration = 'None'
+        type_hit_average_duration = 0
     else:
         type_hit_average_duration = total_hits_time / total_hits
 
     if total_miss == 0:
-        type_miss_average_duration = 'None'
+        type_miss_average_duration = 0
     else:
         type_miss_average_duration = total_miss_time / total_miss
 
@@ -228,7 +228,7 @@ def max_inputs(n):
 
 def main():
 
-    # Creat a agrparse and add arguments for time mode and max value mode
+    # Create a argparser and add arguments for time mode and max value mode
     parser = argparse.ArgumentParser(description='Definition of ' + Fore.LIGHTBLUE_EX + 'test '
                                                  + Style.RESET_ALL + 'mode')
     parser.add_argument('-utm', '--use_time_mode', action='store_true', help='Max number of secs for time mode '
