@@ -105,7 +105,7 @@ def time_mode(t):
         type_miss_average_duration = total_miss_time/total_miss
 
     # Percentage of accuracy
-    accuracy = total_hits/len(pressed_keys)*100
+    accuracy = total_hits/(len(pressed_keys)-1)*100
 
     # Saving all the statistics in a dictionary and print it
     dict_results = {'Accuracy': str(accuracy) + '%',
