@@ -8,8 +8,10 @@ import string
 import time
 import readchar
 from pprint import pprint
-from interruptingcow import timeout  # install this package
+from collections import namedtuple
 
+# Named tuple to use for save all the inputs
+inputs = namedtuple('inputs', ['requested', 'received', 'duration'])
 
 random_letters = []
 pressed_keys = []
@@ -27,51 +29,59 @@ def time_mode(t):
     print('Press any key to start')
     # The user will press any key to make the test start, this key will not be saved for the statistics
     readchar.readkey()
+
+    print(Fore.LIGHTMAGENTA_EX + 'Press space if you want to exit' + Style.RESET_ALL)
     initial_time = time.time()  # Used to save test start time
 
-    # try statement will keep running the while cycle until the time test (chosen by the user - t) finishes
-    try:
-        with timeout(t, exception=RuntimeError):
-            while True:
-                random_letter = random.choice(string.ascii_lowercase)
-                random_letters.append(random_letter)
-                print('Please type ' + Fore.BLUE + random_letter + Style.RESET_ALL)
-                # save the time so that, later, its possible to calculate how long it took to press the key
-                start_time = time.time()
+    total_duration = 0
+    while True:
+        random_letter = random.choice(string.ascii_lowercase)
+        random_letters.append(random_letter)
+        print('Please type ' + Fore.BLUE + random_letter + Style.RESET_ALL)
+        # save the time so that, later, its possible to calculate how long it took to press the key
+        start_time = time.time()
 
-                # Read the typed key and save it in the respective list
-                pressed_key = readchar.readkey()
-                pressed_keys.append(pressed_key)
-                # Save the time, calculate the type duration and append it to the respective list
-                final_time = time.time()
-                duration_type = final_time - start_time
-                duration_types.append(duration_type)
+        # Read the typed key and save it in the respective list
+        pressed_key = readchar.readkey()
+        pressed_keys.append(pressed_key)
+        # Save the time, calculate the type duration and append it to the respective list
+        final_time = time.time()
+        duration_type = final_time - start_time
+        duration_types.append(duration_type)
 
-                # Verify if the pressed key was the correct one, or not
-                if random_letter == pressed_key:
-                    # Hit -> add one to the counter of total hits
-                    total_hits += 1
-                    print('You typed ' + Fore.GREEN + pressed_key + Style.RESET_ALL)
-                else:
-                    # Miss
-                    print('You typed ' + Fore.RED + pressed_key + Style.RESET_ALL)
+        # Update the total duration of the test
+        total_duration += duration_type
 
-                # Update thw total number of types
-                total_types += 1
+        # Break cycle if total duration > test duration
+        if total_duration > t:
+            print("Current test duration (" + str(round(total_duration, 3)) + ') exceeds maximum of ' + str(t))
+            break
 
-                # Save the result and append it ro the list 'Types'
-                result = 'Input( requested=' + random_letter + ', received=' + pressed_key + \
-                    ', duration= ' + str(duration_type) + ')'
-                types.append(result)
+        # Exit if the user press space
+        if pressed_key == ' ':
+            print(Fore.RED + 'You pressed space to exit!' + Style.RESET_ALL)
+            exit(0)
 
-    # After the time is over, print a message and break the while cycle
-    except RuntimeError:
-        print("Your time is over.")
-        print(Fore.BLUE + 'Test finished!' + Style.RESET_ALL)
-        pass
+        # Verify if the pressed key was the correct one, or not
+        if random_letter == pressed_key:
+            # Hit -> add one to the counter of total hits
+            total_hits += 1
+            print('You typed ' + Fore.GREEN + pressed_key + Style.RESET_ALL)
+        else:
+            # Miss
+            print('You typed ' + Fore.RED + pressed_key + Style.RESET_ALL)
+
+        # Update thw total number of types
+        total_types += 1
+
+        # Save the result and append it ro the list 'Types'
+        result = inputs(requested=random_letter, received=pressed_key, duration=round(duration_type, 3))
+        types.append(result)
+
+    print(Fore.BLUE + 'Test finished!' + Style.RESET_ALL)
 
     # Calculate the average type duration, with the test time (t) and the number of types
-    type_average_duration = t / total_types
+    type_average_duration = total_duration / total_types
 
     # For cycle to sum the total time on hit and miss types
     total_hits_time = 0
@@ -82,13 +92,12 @@ def time_mode(t):
         else:
             total_miss_time += duration_types[i]
 
-    # Clculate average miss and hit duration -> time lost on hits/number of hits (the same for miss)
+    # Calculate average miss and hit duration -> time lost on hits/number of hits (the same for miss)
     total_miss = total_types - total_hits
     if total_hits == 0:
         type_hit_average_duration = 'None'
     else:
         type_hit_average_duration = total_hits_time / total_hits
-
 
     if total_miss == 0:
         type_miss_average_duration = 'None'
@@ -103,12 +112,12 @@ def time_mode(t):
                     'Inputs': types,
                     'Number of hits': total_hits,
                     'Number of types': total_types,
-                    'Test duration': str(t) + 's',
+                    'Test duration': str(round(total_duration, 3)) + 's',
                     'Test end': time.ctime(final_time),
                     'Test start': time.ctime(initial_time),
-                    'Type average duration': type_average_duration,
-                    'Type hit average duration': type_hit_average_duration,
-                    'Type miss average duration': type_miss_average_duration
+                    'Type average duration': round(type_average_duration, 3),
+                    'Type hit average duration': round(type_hit_average_duration, 3),
+                    'Type miss average duration': round(type_miss_average_duration,3)
                     }
     pprint(dict_results)
 
@@ -126,10 +135,12 @@ def max_inputs(n):
     print('Press any key to start')
     readchar.readkey()
 
+    print(Fore.LIGHTMAGENTA_EX + 'Press space if you want to exit' + Style.RESET_ALL)
     initial_time = time.time()  # Used to save test start time
 
-    # The program will run n times
-    while True:
+    # The program will run n times - required by the user
+    for total_types in range(0, n):
+
         # Save the initial time each time to then calculate the type duration
         start_time = time.time()
         # Generate a random letter and save it
@@ -140,6 +151,11 @@ def max_inputs(n):
         print('Please type ' + Fore.BLUE + random_letter + Style.RESET_ALL)
         pressed_key = readchar.readkey()
         pressed_keys.append(pressed_key)
+
+        # Exit if the user press space
+        if pressed_key == ' ':
+            print(Fore.RED + 'You pressed space to exit!' + Style.RESET_ALL)
+            exit(0)
 
         # save the time and calculate type duration
         final_time = time.time()
@@ -159,13 +175,10 @@ def max_inputs(n):
             print('You typed ' + Fore.RED + pressed_key + Style.RESET_ALL)
 
         # Save the result and append it ro the list 'Types'
-        result = 'Input( requested=' + random_letter + ', received=' + pressed_key + \
-                 ', duration= ' + str(duration_type) + ')'
+        result = inputs(requested=random_letter, received=pressed_key, duration=round(duration_type,3))
         types.append(result)
 
-        if total_types == n:
-            # The number of types reached the maximum, break cycle
-            break
+
 
     # Calculate the total duration of the test
     total_duration = final_time - initial_time
@@ -203,12 +216,12 @@ def max_inputs(n):
                     'Inputs': types,
                     'Number of hits': total_hits,
                     'Number of types': total_types,
-                    'Test duration': str(total_duration) + 's',
+                    'Test duration': str(round(total_duration, 3)) + 's',
                     'Test end': time.ctime(final_time),
                     'Test start': time.ctime(initial_time),
-                    'Type average duration': type_average_duration,
-                    'Type hit average duration': type_hit_average_duration,
-                    'Type miss average duration': type_miss_average_duration
+                    'Type average duration': round(type_average_duration, 3),
+                    'Type hit average duration': round(type_hit_average_duration, 3),
+                    'Type miss average duration': round(type_miss_average_duration, 3)
                     }
     pprint(dict_results)
 
