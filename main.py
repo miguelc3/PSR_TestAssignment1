@@ -13,6 +13,7 @@ from collections import namedtuple
 # Named tuple to use for saving all the inputs
 inputs = namedtuple('inputs', ['requested', 'received', 'duration'])
 
+# Global variables
 random_letters = []
 pressed_keys = []
 types = []
@@ -117,7 +118,7 @@ def time_mode(t):
                     'Test start': time.ctime(initial_time),
                     'Type average duration': round(type_average_duration, 3),
                     'Type hit average duration': round(type_hit_average_duration, 3),
-                    'Type miss average duration': round(type_miss_average_duration,3)
+                    'Type miss average duration': round(type_miss_average_duration, 3)
                     }
     pprint(dict_results)
 
@@ -175,10 +176,8 @@ def max_inputs(n):
             print('You typed ' + Fore.RED + pressed_key + Style.RESET_ALL)
 
         # Save the result and append it ro the list 'Types'
-        result = inputs(requested=random_letter, received=pressed_key, duration=round(duration_type,3))
+        result = inputs(requested=random_letter, received=pressed_key, duration=round(duration_type, 3))
         types.append(result)
-
-
 
     # Calculate the total duration of the test
     total_duration = final_time - initial_time
