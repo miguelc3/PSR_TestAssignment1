@@ -45,10 +45,9 @@ def time_mode(t):
         # Read the typed key and save it in the respective list
         pressed_key = readchar.readkey()
         pressed_keys.append(pressed_key)
-        # Save the time, calculate the type duration and append it to the respective list
+        # Save the time, calculate the type duration
         final_time = time.time()
         duration_type = final_time - start_time
-        duration_types.append(duration_type)
 
         # Update the total duration of the test
         total_duration += duration_type
@@ -57,6 +56,9 @@ def time_mode(t):
         if total_duration > t:
             print("Current test duration (" + str(round(total_duration, 3)) + ') exceeds maximum of ' + str(t))
             break
+
+        # Append duration to he respective list
+        duration_types.append(duration_type)
 
         # Exit if the user presses space
         if pressed_key == ' ':
@@ -87,7 +89,7 @@ def time_mode(t):
     # For cycle to sum the total time on hit and miss types
     total_hits_time = 0
     total_miss_time = 0
-    for i in range(0, len(pressed_keys)):
+    for i in range(0, len(pressed_keys)-1): # '-1' so that the last input does not influence the average statistics (exceeds time)
         if pressed_keys[i] == random_letters[i]:
             total_hits_time += duration_types[i]
         else:
