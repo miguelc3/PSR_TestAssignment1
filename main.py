@@ -89,7 +89,8 @@ def time_mode(t):
     # For cycle to sum the total time on hit and miss types
     total_hits_time = 0
     total_miss_time = 0
-    for i in range(0, len(pressed_keys)-1): # '-1' so that the last input does not influence the average statistics (exceeds time)
+    for i in range(0, len(pressed_keys)-1): # '-1' so that the last input does not influence
+        # the average statistics (exceeds time)
         if pressed_keys[i] == random_letters[i]:
             total_hits_time += duration_types[i]
         else:
